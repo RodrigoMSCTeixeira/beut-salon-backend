@@ -1,5 +1,6 @@
 interface IService<T> {
   get getCreate(): Promise<T> | void
+  get getCreateMany(): Promise<void> | void
   get getRead(): Promise<T[]> | void
   get getReadById(): Promise<T | null> | void
   get getUpdate(): Promise<T> | void
@@ -8,6 +9,8 @@ interface IService<T> {
 
 export default class Service<T> implements IService<T> {
   protected create?(): Promise<T>
+
+  protected createMany?(): Promise<void>
 
   protected read?(): Promise<T[]>
 
@@ -20,6 +23,12 @@ export default class Service<T> implements IService<T> {
   get getCreate(): void | Promise<T> {
     if (this.create) {
       return this.create()
+    }
+  }
+
+  get getCreateMany(): void | Promise<void> {
+    if (this.createMany) {
+      return this.createMany()
     }
   }
 
