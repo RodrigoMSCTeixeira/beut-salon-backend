@@ -14,7 +14,7 @@ export default class AgendamentoController extends Controller {
         const data = await new AgendamentoService(req.body).getCreateMany
         return res.status(200).json({ data })
       } else {
-        const data = await new AgendamentoService(req.body).getCreate
+        const data = await new AgendamentoService(req.body[0]).getCreate
         return res.status(200).json({ data })
       }
     } catch (error) {

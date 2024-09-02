@@ -72,7 +72,22 @@ export default class ClienteService<T> extends Service<ClienteModel> {
         Nome: true,
         Email: true,
         Telefone: true,
-        Agendamentos: true,
+        Agendamentos: {
+          select: {
+            Data_agendamento: true,
+            Id_agendamento: true,
+            Id_cliente: true,
+            Id_funcionario: true,
+            Status: true,
+            Servico: {
+              select: {
+                Id_servico: true,
+                Descricao: true,
+                Preco: true,
+              },
+            },
+          },
+        },
       },
     })
 

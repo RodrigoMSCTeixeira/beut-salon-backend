@@ -1,6 +1,14 @@
 import Service from './Service'
+import Prisma from '@prisma/client'
 import prismaClient from '../utils/prismaClient'
 import AgendamentoModel from '../models/AgendamentoModel'
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library'
 
 export default class AgendamentoService<T> extends Service<AgendamentoModel> {
   private _agendamento: AgendamentoModel
@@ -14,13 +22,7 @@ export default class AgendamentoService<T> extends Service<AgendamentoModel> {
     await prismaClient.$connect()
 
     const dbQuery = await prismaClient.agendamento.create({
-      data: {
-        Id_cliente: this._agendamento.Id_cliente,
-        Id_funcionario: this._agendamento.Id_funcionario,
-        Id_servico: this._agendamento.Id_servico,
-        Data_agendamento: this._agendamento.Data_agendamento,
-        Status: this._agendamento.Status,
-      },
+      data: this._agendamento,
       select: {
         Id_agendamento: true,
         Id_cliente: true,
@@ -30,6 +32,51 @@ export default class AgendamentoService<T> extends Service<AgendamentoModel> {
         Status: true,
       },
     })
+
+    // let dbQuery: AgendamentoModel = {} as AgendamentoModel
+
+    // try {
+    //   dbQuery = await prismaClient.agendamento.create({
+    //     data: {
+    //       Id_cliente: this._agendamento.Id_cliente,
+    //       Id_funcionario: this._agendamento.Id_funcionario,
+    //       Id_servico: this._agendamento.Id_servico,
+    //       Data_agendamento: this._agendamento.Data_agendamento,
+    //       Status: this._agendamento.Status,
+    //     },
+    //     select: {
+    //       Id_agendamento: true,
+    //       Id_cliente: true,
+    //       Id_funcionario: true,
+    //       Id_servico: true,
+    //       Data_agendamento: true,
+    //       Status: true,
+    //     },
+    //   })
+    // } catch (error: any) {
+    //   if (error instanceof PrismaClientKnownRequestError) {
+    //     // Erros conhecidos do Prisma Client
+    //     console.error('Erro conhecido do Prisma Client:', error.message)
+    //     if (error.code === 'P2002') {
+    //       console.error('Violação de unicidade:', error.meta?.target)
+    //     }
+    //   } else if (error instanceof PrismaClientUnknownRequestError) {
+    //     // Erros desconhecidos do Prisma Client
+    //     console.error('Erro desconhecido do Prisma Client:', error.message)
+    //   } else if (error instanceof PrismaClientRustPanicError) {
+    //     // Erros do Rust no Prisma Client
+    //     console.error('Erro do Rust no Prisma Client:', error.message)
+    //   } else if (error instanceof PrismaClientInitializationError) {
+    //     // Erros de inicialização do Prisma Client
+    //     console.error('Erro de inicialização do Prisma Client:', error.message)
+    //   } else if (error instanceof PrismaClientValidationError) {
+    //     // Erros de validação do Prisma Client
+    //     console.error('Erro de validação do Prisma Client:', error.message)
+    //   } else {
+    //     // Outros erros
+    //     console.error('Erro desconhecido:', error)
+    //   }
+    // }
 
     await prismaClient.$disconnect()
 
@@ -98,6 +145,12 @@ export default class AgendamentoService<T> extends Service<AgendamentoModel> {
         Id_servico: true,
         Data_agendamento: true,
         Status: true,
+        Servico: {
+          select: {
+            Id_servico: true,
+            Preco: true,
+          },
+        },
       },
     })
 
